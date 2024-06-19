@@ -36,6 +36,8 @@ class Gurobi(Package):
     license_vars = ["GRB_LICENSE_FILE"]
     license_url = "http://www.gurobi.com/downloads/download-center"
 
+    executables = ["gurobi.sh"]
+
     variant("python", default=False, description="Install gurobipy")
 
     with when("+python"):
@@ -64,3 +66,14 @@ class Gurobi(Package):
             with working_dir("linux64"):
                 python = which("python")
                 python("setup.py", "install", "--prefix={0}".format(self.prefix))
+
+    @classmethod
+    def determine_version(cls, exe):
+        """
+        Return either the version of the executable passed as argument
+        or ``None`` if the version cannot be determined.
+
+        Args:
+            exe (str): absolute path to the executable being examined
+        """
+        return os.path.basename(os.path.dirname(os.path.dirname(exe)))
